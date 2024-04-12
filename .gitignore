@@ -1,6 +1,12 @@
 #weights 
 weights/
 
+#Data
+PDEBench/
+
+#Runs
+~/MPP/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
