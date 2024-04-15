@@ -1,6 +1,6 @@
 basic_config: &basic_config
   # Run settings
-  log_to_wandb: !!bool True # Use wandb integration
+  log_to_wandb: !!bool False # Use wandb integration
   log_to_screen: !!bool True # Log progress to screen.
   save_checkpoint: !!bool True # Save checkpoints
   checkpoint_save_interval: 10 # Save every # epochs - also saves "best" according to val loss
@@ -20,7 +20,7 @@ basic_config: &basic_config
   # Training settings
   drop_path: 0.1
   batch_size: 20
-  max_epochs: 1
+  max_epochs: 10
   scheduler_epochs: -1
   epoch_size: 2000 # Artificial epoch size
   rescale_gradients: !!bool False # Activate hook that scales block gradients to norm 1
@@ -54,7 +54,7 @@ basic_config: &basic_config
   extended_names: !!bool False # Whether to use extended names - not currently implemented
   embedding_offset: 0  # Use when adding extra finetuning fields
   train_data_paths: [
-              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
               # ['~/PDEBench/2D/NS_incom', 'incompNS', ''],
               # ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
               #  ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
@@ -62,7 +62,7 @@ basic_config: &basic_config
               # ['~/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   valid_data_paths: [
-              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
               # ['~/PDEBench/2D/NS_incom', 'incompNS', ''],
               # ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
               #  ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
@@ -79,12 +79,12 @@ finetune: &finetune
   accum_grad: 1
   pretrained: !!bool True
   group: 'debugging'
-  pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretrainingweights/'
+  pretrained_ckpt_path: '/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/weights'
   train_data_paths: [
-              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining//PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+              ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   valid_data_paths: [  # These are the same for all configs - uses split according to train_val_test
-               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining//PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+               ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   embedding_offset: 0 # Number of fields in original model - FT fields start after this
   freeze_middle: !!bool False # Whether to freeze the middle layers of the model
