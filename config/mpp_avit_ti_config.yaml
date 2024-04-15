@@ -19,7 +19,7 @@ basic_config: &basic_config
   entity: 'entity'
   # Training settings
   drop_path: 0.1
-  batch_size: 1
+  batch_size: 20
   max_epochs: 1
   scheduler_epochs: -1
   epoch_size: 2000 # Artificial epoch size
