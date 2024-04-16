@@ -19,8 +19,8 @@ basic_config: &basic_config
   entity: 'entity'
   # Training settings
   drop_path: 0.1
-  batch_size: 20
-  max_epochs: 10
+  batch_size: 10
+  max_epochs: 500
   scheduler_epochs: -1
   epoch_size: 2000 # Artificial epoch size
   rescale_gradients: !!bool False # Activate hook that scales block gradients to norm 1
@@ -59,7 +59,7 @@ basic_config: &basic_config
               # ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
               #  ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
               # ['~/PDEBench/2D/CFD/2D_Train_Turb', compNS, ''],
-              # ['~/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+              ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   valid_data_paths: [
               ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
@@ -67,7 +67,7 @@ basic_config: &basic_config
               # ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
               #  ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
               # ['~/PDEBench/2D/CFD/2D_Train_Turb', compNS, ''],
-              # ['~/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+              ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   append_datasets: [] # List of datasets to append to the input/output projections for finetuning
 

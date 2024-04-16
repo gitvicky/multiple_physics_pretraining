@@ -6,8 +6,8 @@ einops==0.7
 h5py==3.9.0
 numpy==1.25.2
 timm==0.9.5
-torch==2.1
-torchinfo==1.8.0
+# torch==2.1
+# torchinfo==1.8.0
 wandb==0.15.8
 tqdm==4.66.0
 zarr==2.16.1

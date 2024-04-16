@@ -26,7 +26,7 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 module purge                               # Removes all modules still loaded
 module load rhel8/default-amp              # REQUIRED - loads the basic environment
 # module load cuda/11.8 cudnn/8.9_cuda-11.8
-# module load cuda/12.1 cudnn/cuda12-8.9.0 nccl/cuda12.1-2.18.1 
+module load cuda/12.1 ccudnn/8.9_cuda-12.1 #nccl/cuda12.1-2.18.1 
 source /home/ir-gopa2/miniconda3/etc/profile.d/conda.sh
 conda activate mpp_env
 
@@ -35,7 +35,7 @@ conda activate mpp_env
 config="basic_config"   # options are "basic_config" for all or swe_only/comp_only/incomp_only/swe_and_incomp
 yaml_config="/config/mpp_avit_b_config.yaml"
 
-application="python /home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/train_basic.py --yaml_config config/mpp_avit_ti_config.yaml --config basic_config"
+application="python /home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/train_basic.py --yaml_config config/mpp_avit_ti_config.yaml --config basic_config --run_name swe_diffreact_tiny"
 
 #! Run options for the application:
 options=""
