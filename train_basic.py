@@ -167,7 +167,12 @@ class Trainer:
 
     def restore_checkpoint(self, checkpoint_path):
         """ Load model/opt from path """
-        checkpoint = torch.load(checkpoint_path, map_location='cuda:{}'.format(self.local_rank))
+        device = torch.device(local_rank) if torch.cuda.is_available() else torch.device("cpu")
+        print(device)
+        # if device == 'cpu':
+        checkpoint = torch.load(checkpoint_path, map_location='cpu')
+        # else:
+        #     checkpoint = torch.load(checkpoint_path, map_location='cuda:{}'.format(self.local_rank))
         if 'model_state' in checkpoint:
             model_state = checkpoint['model_state']
         else:
@@ -176,7 +181,10 @@ class Trainer:
             self.model.load_state_dict(model_state)
         except: # If that fails, either try to load into module or strip DDP prefix
             if hasattr(self.model, 'module'):
-                self.model.module.load_state_dict(model_state)
+                if params.use_ddp:
+                    self.model.module.load_state_dict(model_state)
+                else:
+                    self.model.load_state_dict(model_state)
             else:
                 new_state_dict = OrderedDict()
                 for key, val in model_state.items():
@@ -194,17 +202,29 @@ class Trainer:
             self.iters = 0
         if self.params.pretrained:
             if self.params.freeze_middle:
-                self.model.module.freeze_middle()
+                if self.params.use_ddp:
+                    self.model.module.freeze_middle()
+                else:
+                    self.model.freeze_middle() #No DDP
             elif self.params.freeze_processor:
-                self.model.module.freeze_processor()
+                if self.params.use_ddp:
+                    self.model.module.freeze_processor()
+                else:
+                    self.model.freeze_processor() #No DDP
             else:
-                self.model.module.unfreeze()
+                if self.params.use_ddp:
+                    self.model.module.unfreeze()
+                else:
+                    self.model.unfreeze() #No DDP
             # See how much we need to expand the projections
             exp_proj = 0
             # Iterate through the appended datasets and add on enough embeddings for all of them. 
             for add_on in self.params.append_datasets:
                 exp_proj += len(DSET_NAME_TO_OBJECT[add_on]._specifics()[2])
-            self.model.module.expand_projections(exp_proj)
+            if self.params.use_ddp:
+                self.model.module.expand_projections(exp_proj)
+            else:
+                self.model.expand_projections(exp_proj)
         checkpoint = None
         self.model = self.model.to(self.device)
 
@@ -496,6 +516,7 @@ if __name__ == '__main__':
         torch.cuda.set_device(local_rank) # Torch docs recommend just using device, but I had weird memory issues without setting this.
     device = torch.device(local_rank) if torch.cuda.is_available() else torch.device("cpu")
 
+    print(params.use_ddp)
     # Modify params
     params['batch_size'] = int(params.batch_size//world_size)
     params['startEpoch'] = 0
