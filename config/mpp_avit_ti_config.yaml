@@ -79,7 +79,8 @@ finetune: &finetune
   accum_grad: 1
   pretrained: !!bool True
   group: 'debugging'
-  pretrained_ckpt_path: '/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/weights'
+  # pretrained_ckpt_path: '/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/weights/swe_tiny_best_ckpt.tar'
+  pretrained_ckpt_path: '/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/weights/MPP_AViT_Ti'
   train_data_paths: [
               ['/home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
