@@ -54,37 +54,37 @@ basic_config: &basic_config
   extended_names: !!bool False # Whether to use extended names - not currently implemented
   embedding_offset: 0  # Use when adding extra finetuning fields
   train_data_paths: [
-              ['~/PDEBench/2D/shallow-water', 'swe', ''],
-              ['~/PDEBench/2D/NS_incom', 'incompNS', ''],
-              ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
-               ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
-              ['~/PDEBench/2D/CFD/2D_Train_Turb', compNS, ''],
-              ['~/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              # ['~/PDEBench/2D/NS_incom', 'incompNS', ''],
+              # ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
+              #  ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
+              # ['~/PDEBench/2D/CFD/2D_Train_Turb', compNS, ''],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   valid_data_paths: [
-              ['~/PDEBench/2D/shallow-water', 'swe', ''],
-              ['~/PDEBench/2D/NS_incom', 'incompNS', ''],
-              ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
-               ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
-              ['~/PDEBench/2D/CFD/2D_Train_Turb', compNS, ''],
-              ['~/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              # ['~/PDEBench/2D/NS_incom', 'incompNS', ''],
+              # ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '128'],
+              #  ['~/PDEBench/2D/CFD/2D_Train_Rand', compNS, '512'],
+              # ['~/PDEBench/2D/CFD/2D_Train_Turb', compNS, ''],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   append_datasets: [] # List of datasets to append to the input/output projections for finetuning
 
 
 finetune: &finetune
   <<: *basic_config
-  max_epochs: 500
+  max_epochs: 0
   train_val_test: [.8, .1, .1]
   accum_grad: 1
   pretrained: !!bool True
   group: 'debugging'
-  pretrained_ckpt_path: '/B16-noNS/training_checkpoints/ckpt.tar'
+  pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/MPP_AViT_L'
   train_data_paths: [
-              ['/PDEBench/2D/CFD/2D_Train_Turb', 'compNS', 'M1.0'],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
               ]
   valid_data_paths: [  # These are the same for all configs - uses split according to train_val_test
-               ['/PDEBench/2D/CFD/2D_Train_Turb', 'compNS', 'M1.0'],
+               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
               ]
   embedding_offset: 0 # Number of fields in original model - FT fields start after this
   freeze_middle: !!bool False # Whether to freeze the middle layers of the model
