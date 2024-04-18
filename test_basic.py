@@ -376,7 +376,7 @@ class Trainer:
                                                 device=self.device).unsqueeze(0).expand(tar.shape[0], -1)
                             inp = rearrange(inp, 'b t c h w -> t b c h w')
                             output = self.model(inp, labels, bcs)
-        return rearrange(inp, 't b c h w -> b t c h w'), labels, bcs, output
+        return rearrange(inp, 't b c h w -> b t c h w'), labels, bcs, output, tar
         #                     # I don't think this is the true metric, but PDE bench averages spatial RMSE over batches (MRMSE?) rather than root after mean
         #                     # And we want the comparison to be consistent
         #                     spatial_dims = tuple(range(output.ndim))[2:] # Assume 0, 1, 2 are T, B, C
@@ -500,13 +500,13 @@ class Trainer:
                 self.single_print('Train loss: {}. Valid loss: {}'.format(train_logs['train_nrmse'], valid_logs['valid_nrmse']))
 
     def test(self):
-        a, b, c, d = self.validate_one_epoch()
-        return a, b, c, d
+        a, b, c, d, e = self.validate_one_epoch()
+        return a, b, c, d, e
 
 class Args(argparse.Namespace):
   run_name = '00'
   use_ddp = False
-  yaml_config = './config/mpp_avit_L_config.yaml'
+  yaml_config = './config/mpp_avit_ti_config.yaml'
   config = 'finetune'
   sweep_id = None
 
@@ -580,5 +580,5 @@ if __name__ == '__main__':
     # else:
     #     trainer.train()
     
-    a,b,c,d = trainer.test()
+    a,b,c,d,e  = trainer.test()
 # %% 
