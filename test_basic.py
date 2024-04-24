@@ -32,6 +32,7 @@ except:
     from .utils import logging_utils
     from .utils.YParams import YParams
 
+from matplotlib import pyplot as plt
 # %%
 def add_weight_decay(model, weight_decay=1e-5, inner_lr=1e-3, skip_list=()):
     """ From Ross Wightman at:
@@ -363,6 +364,8 @@ class Trainer:
                                                                     shuffle=True, generator= torch.Generator().manual_seed(0),
                                                                     drop_last=True)
                         count = 0
+                        test_out = []
+                        test_targ = []
                         for batch_idx, data in enumerate(temp_loader):
                             # Only do a few batches of each dataset if not doing full validation
                             if count > cutoff:
@@ -375,8 +378,14 @@ class Trainer:
                             labels = torch.tensor(self.train_dataset.subset_dict.get(subset.get_name(), [-1]*len(self.valid_dataset.subset_dict[subset.get_name()])),
                                                 device=self.device).unsqueeze(0).expand(tar.shape[0], -1)
                             inp = rearrange(inp, 'b t c h w -> t b c h w')
+                            labels = torch.tensor([[0]])
                             output = self.model(inp, labels, bcs)
         return rearrange(inp, 't b c h w -> b t c h w'), labels, bcs, output, tar
+
+            #                 test_out.append(output)
+            #                 test_targ.append(tar)
+            # return test_out, test_targ
+
         #                     # I don't think this is the true metric, but PDE bench averages spatial RMSE over batches (MRMSE?) rather than root after mean
         #                     # And we want the comparison to be consistent
         #                     spatial_dims = tuple(range(output.ndim))[2:] # Assume 0, 1, 2 are T, B, C
@@ -502,6 +511,8 @@ class Trainer:
     def test(self):
         a, b, c, d, e = self.validate_one_epoch()
         return a, b, c, d, e
+        # targs, outputs = self.validate_one_epoch()
+        # return targs, outputs
 
 class Args(argparse.Namespace):
   run_name = '00'
@@ -579,6 +590,6 @@ if __name__ == '__main__':
     #     wandb.agent(args.sweep_id, function=trainer.train, count=1, entity=trainer.params.entity, project=trainer.params.project) 
     # else:
     #     trainer.train()
-    
     a,b,c,d,e  = trainer.test()
+    # outs, targs = trainer.test()
 # %% 

@@ -19,8 +19,8 @@ basic_config: &basic_config
   entity: 'entity'
   # Training settings
   drop_path: 0.1
-  batch_size: 20
-  max_epochs: 1
+  batch_size: 1
+  max_epochs: 10
   scheduler_epochs: -1
   epoch_size: 2000 # Artificial epoch size
   rescale_gradients: !!bool False # Activate hook that scales block gradients to norm 1
@@ -74,17 +74,21 @@ basic_config: &basic_config
 
 finetune: &finetune
   <<: *basic_config
-  max_epochs: 0
+  max_epochs: 10
   train_val_test: [.8, .1, .1]
   accum_grad: 1
   pretrained: !!bool True
   group: 'debugging'
-  pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/MPP_AViT_Ti' #swe_tiny_best.tar'
+  pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/swe_tiny_best.tar' #MPP_AViT_Ti' swe_tiny_best.tar'
   train_data_paths: [
-              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
+              # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+              # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
               ]
   valid_data_paths: [  # These are the same for all configs - uses split according to train_val_test
-               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
+                # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              #  ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
               ]
   embedding_offset: 0 # Number of fields in original model - FT fields start after this
   freeze_middle: !!bool False # Whether to freeze the middle layers of the model

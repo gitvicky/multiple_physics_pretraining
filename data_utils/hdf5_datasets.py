@@ -411,3 +411,25 @@ class DiffSorb1DDataset(BaseHDF5DirectoryDataset):
         return file[samples[sample_idx]]['data'][time_idx-n_steps*self.dt:time_idx+self.dt].transpose(0, 2, 1)[:, :, :, None]
 
  
+class MHDDataset(BaseHDF5DirectoryDataset):
+    @staticmethod
+    def _specifics():
+        time_index = 0
+        sample_index = None
+        field_names = ['density']
+        type = 'mhdJOREK'
+        split_level = 'sample'
+        return time_index, sample_index, field_names, type, split_level
+
+    def _get_specific_stats(self, f):
+        samples = list(f.keys())
+        steps = f[samples[0]]['data'].shape[0]
+        return len(samples), steps
+    
+    def _get_specific_bcs(self, f):
+        return [0, 0] # Non-periodic
+
+    def _reconstruct_sample(self, file, sample_idx, time_idx, n_steps):
+        samples = list(file.keys())
+        return file[samples[sample_idx]]['data'][time_idx-n_steps*self.dt:time_idx+self.dt].transpose(0, 3, 1, 2)
+    
