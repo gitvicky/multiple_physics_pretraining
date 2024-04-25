@@ -74,17 +74,17 @@ basic_config: &basic_config
 
 finetune: &finetune
   <<: *basic_config
-  max_epochs: 0
+  max_epochs: 10
   train_val_test: [.8, .1, .1]
   accum_grad: 1
   pretrained: !!bool True
   group: 'debugging'
   pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/MPP_AViT_L'
   train_data_paths: [
-              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
               ]
   valid_data_paths: [  # These are the same for all configs - uses split according to train_val_test
-               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
               ]
   embedding_offset: 0 # Number of fields in original model - FT fields start after this
   freeze_middle: !!bool False # Whether to freeze the middle layers of the model

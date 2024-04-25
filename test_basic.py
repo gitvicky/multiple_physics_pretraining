@@ -1,6 +1,6 @@
 # %%
 import argparse
-import os
+import os 
 import time
 import numpy as np
 import torch
@@ -361,7 +361,7 @@ class Trainer:
                             # Seed isn't important, just trying to mix up samples from different trajectories
                             temp_loader = torch.utils.data.DataLoader(subset, batch_size=self.params.batch_size,
                                                                     num_workers=self.params.num_data_workers, 
-                                                                    shuffle=True, generator= torch.Generator().manual_seed(0),
+                                                                    shuffle=False, generator= torch.Generator().manual_seed(0),
                                                                     drop_last=True)
                         count = 0
                         test_out = []
@@ -380,11 +380,11 @@ class Trainer:
                             inp = rearrange(inp, 'b t c h w -> t b c h w')
                             labels = torch.tensor([[0]])
                             output = self.model(inp, labels, bcs)
-        return rearrange(inp, 't b c h w -> b t c h w'), labels, bcs, output, tar
+        # return rearrange(inp, 't b c h w -> b t c h w'), labels, bcs, output, tar
 
-            #                 test_out.append(output)
-            #                 test_targ.append(tar)
-            # return test_out, test_targ
+                            test_out.append(output)
+                            test_targ.append(tar)
+            return test_out, test_targ
 
         #                     # I don't think this is the true metric, but PDE bench averages spatial RMSE over batches (MRMSE?) rather than root after mean
         #                     # And we want the comparison to be consistent
@@ -509,10 +509,10 @@ class Trainer:
                 self.single_print('Train loss: {}. Valid loss: {}'.format(train_logs['train_nrmse'], valid_logs['valid_nrmse']))
 
     def test(self):
-        a, b, c, d, e = self.validate_one_epoch()
-        return a, b, c, d, e
-        # targs, outputs = self.validate_one_epoch()
-        # return targs, outputs
+        # a, b, c, d, e = self.validate_one_epoch()
+        # return a, b, c, d, e
+        targs, outputs = self.validate_one_epoch()
+        return np.asarray(targs), np.asarray(outputs)
 
 class Args(argparse.Namespace):
   run_name = '00'
@@ -590,6 +590,34 @@ if __name__ == '__main__':
     #     wandb.agent(args.sweep_id, function=trainer.train, count=1, entity=trainer.params.entity, project=trainer.params.project) 
     # else:
     #     trainer.train()
-    a,b,c,d,e  = trainer.test()
-    # outs, targs = trainer.test()
-# %% 
+    # a,b,c,d,e  = trainer.test()
+    outs, targs = trainer.test()
+
+
+
+
+# %%    
+
+idx = 39
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
+
+# Plot data1 on the first subplot
+im1 = ax1.imshow(targs[idx, 0, 0], cmap='viridis')
+ax1.set_title('Targets: t=' + str(idx+1))
+ax1.axis('off')
+
+# Plot data2 on the second subplot
+im2 = ax2.imshow(outs[idx,0,0], cmap='viridis')
+ax2.set_title('Outputs t=' + str(idx+1))
+ax2.axis('off')
+
+# Create a colorbar and set its position
+cbar_ax = fig.add_axes([0.48, 0.15, 0.02, 0.7])
+fig.colorbar(im1, cax=cbar_ax)
+
+# Adjust the spacing between subplots
+# fig.tight_layout()
+
+# Display the plot
+plt.show()
+# %%
