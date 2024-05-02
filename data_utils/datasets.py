@@ -23,6 +23,7 @@ DSET_NAME_TO_OBJECT = {
             'incompNS': IncompNSDataset,
             'diffre2d': DiffRe2DDataset,
             'compNS': CompNSDataset,
+            'mhdJOREK': MHDDataset,
             }
 
 def get_data_loader(params, paths, distributed, split='train', rank=0, train_offset=0):
@@ -103,7 +104,8 @@ class MixedDataset(Dataset):
                         'swe': [3],
                         'incompNS': [0, 1, 2],
                         'compNS': [0, 1, 2, 3],
-                        'diffre2d': [4, 5]
+                        'diffre2d': [4, 5],
+                        'mhdJOREK': [3],
                         }
         elif self.use_all_fields:
             cur_max = 0

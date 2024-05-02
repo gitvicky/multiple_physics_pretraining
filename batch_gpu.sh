@@ -35,7 +35,7 @@ conda activate mpp_env
 # config="basic_config"   # options are "basic_config" for all or swe_only/comp_only/incomp_only/swe_and_incomp
 # yaml_config="/config/mpp_avit_b_config.yaml"
 
-application="python /home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/train_basic.py --yaml_config config/mpp_avit_ti_config.yaml --config finetune --run_name swe_tiny_ft_w_diffreact_test"
+application="python /home/ir-gopa2/rds/rds-ukaea-ap001/ir-gopa2/Code/multiple_physics_pretraining/train_basic.py --yaml_config config/mpp_avit_ti_config.yaml --config finetune --run_name avit_tiny_ft_w_mhd_eps-4"
 
 #! Run options for the application:
 options=""
