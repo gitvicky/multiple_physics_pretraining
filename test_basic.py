@@ -511,7 +511,7 @@ class Trainer:
     def test(self):
         # a, b, c, d, e = self.validate_one_epoch()
         # return a, b, c, d, e
-        targs, outputs = self.validate_one_epoch()
+        targs, outputs = self.validate_one_epoch(full=True)
         return np.asarray(targs), np.asarray(outputs)
 
 class Args(argparse.Namespace):
@@ -594,30 +594,75 @@ if __name__ == '__main__':
     outs, targs = trainer.test()
 
 
-
-
 # %%    
+from utils_cp import * 
 
-idx = 39
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
+if __name__ == '__main__':
+    t_in = 16 #Fixed in the config
+    step = 1 
+    t_out = 34 #50-t_in
+    n_sims = int(targs.shape[0]/t_out)
 
-# Plot data1 on the first subplot
-im1 = ax1.imshow(targs[idx, 0, 0], cmap='viridis')
-ax1.set_title('Targets: t=' + str(idx+1))
-ax1.axis('off')
 
-# Plot data2 on the second subplot
-im2 = ax2.imshow(outs[idx,0,0], cmap='viridis')
-ax2.set_title('Outputs t=' + str(idx+1))
-ax2.axis('off')
+    idx = 30
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 
-# Create a colorbar and set its position
-cbar_ax = fig.add_axes([0.48, 0.15, 0.02, 0.7])
-fig.colorbar(im1, cax=cbar_ax)
+    # Plot data1 on the first subplot
+    im1 = ax1.imshow(targs[idx, 0, 0], cmap='viridis')
+    ax1.set_title('Targets: t=' + str(idx+1))
+    ax1.axis('off')
 
-# Adjust the spacing between subplots
-# fig.tight_layout()
+    # Plot data2 on the second subplot
+    im2 = ax2.imshow(outs[idx,0,0], cmap='viridis')
+    ax2.set_title('Outputs t=' + str(idx+1))
+    ax2.axis('off')
 
-# Display the plot
-plt.show()
+    # Create a colorbar and set its position
+    cbar_ax = fig.add_axes([0.48, 0.15, 0.02, 0.7])
+    fig.colorbar(im1, cax=cbar_ax)
+
+    # Adjust the spacing between subplots
+    # fig.tight_layout()
+
+    # Display the plot
+    plt.show()
+
+    #Perfomring CP 
+    # targs = targs.reshape(n_sims, t_out, targs.shape[2], targs.shape[3], targs.shape[4])
+    # outs = outs.reshape(n_sims, t_out, outs.shape[2], outs.shape[3], outs.shape[4])
+
+# %% 
+from tqdm import tqdm 
+if __name__ == '__main__':
+    n_cal = 100
+    n_pred = 100
+
+    cal_targs = targs[:n_cal]
+    cal_outs = outs[:n_cal]
+
+    pred_targs = targs[n_cal:]
+    pred_outs = outs[n_cal:]
+
+    cal_scores = np.abs(cal_targs - cal_outs)
+
+    qhat = calibrate(cal_scores , n=n_cal, alpha=0.1)
+    pred_sets = [pred_outs - qhat, pred_outs + qhat]
+    coverage = emp_cov(pred_sets, pred_targs)
+
+    #Emprical Coverage for all values of alpha 
+
+    alpha_levels = np.arange(0.05, 0.95, 0.1)
+    emp_cov_res = []
+    for ii in tqdm(range(len(alpha_levels))):
+        qhat = calibrate(cal_scores, n_cal, alpha_levels[ii])
+        prediction_sets =  [pred_outs - qhat, pred_outs + qhat]
+        emp_cov_res.append(emp_cov(prediction_sets, pred_targs))
+
+    import matplotlib as mpl
+    plt.plot(1-alpha_levels, 1-alpha_levels, label='Ideal', color ='black', alpha=0.75)
+    plt.plot(1-alpha_levels, emp_cov_res, label='Residual' ,ls='-.', color='teal', alpha=0.75)
+    plt.xlabel(r'1-$\alpha$')
+    plt.ylabel('Empirical Coverage')
+
+
 # %%

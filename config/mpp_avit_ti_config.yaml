@@ -81,14 +81,14 @@ finetune: &finetune
   group: 'debugging'
   pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/MPP_AViT_Ti' #ckpt.tar''
   train_data_paths: [
-              # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
+              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
               # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
-              ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+              # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
               ]
   valid_data_paths: [  # These are the same for all configs - uses split according to train_val_test
-              #  ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
-                # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
-               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
+               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
+                # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],
+              #  ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/shallow-water', 'swe', ''],
               ]
   embedding_offset: 0 # Number of fields in original model - FT fields start after this
   freeze_middle: !!bool False # Whether to freeze the middle layers of the model
