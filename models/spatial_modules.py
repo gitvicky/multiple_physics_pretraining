@@ -33,10 +33,10 @@ class RMSInstanceNorm2d(nn.Module):
             self.bias = nn.Parameter(torch.zeros(dim)) # Forgot to remove this so its in the pretrained weights
     
     def forward(self, x):
-        std, mean = torch.std_mean(x, dim=(-2, -1), keepdims=True)
-        x = (x) / (std + self.eps)
-        if self.affine:
-            x = x * self.weight[None, :, None, None]  
+        # std, mean = torch.std_mean(x, dim=(-2, -1), keepdims=True) #Comment out for Finetuning
+        # x = (x) / (std + self.eps)
+        # if self.affine:
+        #     x = x * self.weight[None, :, None, None]  
         return x
 
     

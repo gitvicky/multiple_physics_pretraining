@@ -1,3 +1,6 @@
+#PDFs
+*.pdf 
+
 #weights 
 weights/
 

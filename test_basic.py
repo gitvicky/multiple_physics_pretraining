@@ -1,4 +1,5 @@
 # %%
+from tqdm import tqdm
 import argparse
 import os 
 import time
@@ -366,7 +367,7 @@ class Trainer:
                         count = 0
                         test_out = []
                         test_targ = []
-                        for batch_idx, data in enumerate(temp_loader):
+                        for data in tqdm(temp_loader):
                             # Only do a few batches of each dataset if not doing full validation
                             if count > cutoff:
                                 del(temp_loader)
@@ -593,7 +594,6 @@ if __name__ == '__main__':
     # a,b,c,d,e  = trainer.test()
     outs, targs = trainer.test()
 
-
 # %%    
 from utils_cp import * 
 
@@ -627,15 +627,15 @@ if __name__ == '__main__':
     # Display the plot
     plt.show()
 
-    #Perfomring CP 
-    # targs = targs.reshape(n_sims, t_out, targs.shape[2], targs.shape[3], targs.shape[4])
-    # outs = outs.reshape(n_sims, t_out, outs.shape[2], outs.shape[3], outs.shape[4])
+    # #Performing CP 
+    targs = targs.reshape(n_sims, t_out, targs.shape[2], targs.shape[3], targs.shape[4])
+    outs = outs.reshape(n_sims, t_out, outs.shape[2], outs.shape[3], outs.shape[4])
 
 # %% 
 from tqdm import tqdm 
 if __name__ == '__main__':
-    n_cal = 100
-    n_pred = 100
+    n_cal = 200
+    n_pred = 200
 
     cal_targs = targs[:n_cal]
     cal_outs = outs[:n_cal]
@@ -666,3 +666,288 @@ if __name__ == '__main__':
 
 
 # %%
+from matplotlib import cm 
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib as mpl
+
+def error_plots(idx=11):
+    #Error Plots
+
+    output_plot = []
+    u_field = pred_targs[idx] * 1e20
+
+    v_min_1 = np.min(u_field[0])
+    v_max_1 = np.max(u_field[0])
+
+    v_min_2 = np.min(u_field[int(t_out/2)])
+    v_max_2 = np.max(u_field[int(t_out/2)])
+
+    v_min_3 = np.min(u_field[-1])
+    v_max_3 = np.max(u_field[-1])
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(3,3,1)
+    pcm =ax.imshow(u_field[0,0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_1, vmax=v_max_1)
+    # ax.title.set_text('Initial')
+    ax.title.set_text('t='+ str(16))
+    ax.set_ylabel('Solution', weight='regular', fontsize=20)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    
+    ax = fig.add_subplot(3,3,2)
+    pcm = ax.imshow(u_field[int(t_out/2),0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_2, vmax=v_max_2)
+    # ax.title.set_text('Middle')
+    ax.title.set_text('t='+ str(33))
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    ax = fig.add_subplot(3,3,3)
+    pcm = ax.imshow(u_field[-1,0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_3, vmax=v_max_3)
+    # ax.title.set_text('Final')
+    ax.title.set_text('t='+str(50), fontsize=20)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    u_field = pred_outs[idx] * 1e20
+
+    ax = fig.add_subplot(3,3,4)
+    pcm = ax.imshow(u_field[0,0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_1, vmax=v_max_1)
+    ax.set_ylabel('MPP', weight='regular', fontsize=20)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    ax = fig.add_subplot(3,3,5)
+    pcm = ax.imshow(u_field[int(t_out/2), 0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_2, vmax=v_max_2)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    ax = fig.add_subplot(3,3,6)
+    pcm = ax.imshow(u_field[-1,0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_3, vmax=v_max_3)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    u_field = np.abs(pred_targs[idx] - pred_outs[idx]) * 1e20
+
+    ax = fig.add_subplot(3,3,7)
+    pcm = ax.imshow(u_field[0,0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5])
+    ax.set_ylabel('Abs Error', weight='regular', fontsize=20)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    ax = fig.add_subplot(3,3,8)
+    pcm = ax.imshow(u_field[int(t_out/2), 0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5])
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    ax = fig.add_subplot(3,3,9)
+    pcm = ax.imshow(u_field[-1,0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5])
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+
+    # plt.savefig("mhd_rho_MPP_finetune_err.pdf", format="pdf", bbox_inches='tight', transparent='True')
+
+# error_plots()
+# %%
+idx=11 #Pre-trained
+idx = 126 #Fine-tuned
+def qhat_plots(idx):
+    plt.rcdefaults()
+    fig = plt.figure(figsize=(12, 14))
+
+    qhat = calibrate(cal_scores , n=n_cal, alpha=0.05)
+    pred_sets = [pred_outs - qhat, pred_outs + qhat]
+
+    u_field = pred_targs[idx] * 1e20
+
+    v_min_1 = np.min(u_field[0])
+    v_max_1 = np.max(u_field[0])
+
+    v_min_2 = np.min(u_field[int(t_out/2)])
+    v_max_2 = np.max(u_field[int(t_out/2)])
+
+    v_min_3 = np.min(u_field[-1])   
+    v_max_3 = np.max(u_field[-1])
+
+    ax = fig.add_subplot(4,3,1)
+    pcm =ax.imshow(u_field[0,0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_1, vmax=v_max_1)
+    # ax.title.set_text('Initial')
+    ax.set_title('t='+ str(16), fontsize=20)
+    ax.set_ylabel('Solution', weight='regular', fontsize=20)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+    ax = fig.add_subplot(4,3,2)
+    pcm = ax.imshow(u_field[int(t_out/2),0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_2, vmax=v_max_2)
+    # ax.title.set_text('Middle')
+    ax.set_title('t='+ str(33), fontsize=20)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+    
+    ax = fig.add_subplot(4,3,3)
+    pcm = ax.imshow(u_field[-1,0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_3, vmax=v_max_3)
+    # ax.title.set_text('Final')
+    ax.set_title('t='+ str(50), fontsize=20)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+    u_field = pred_outs[idx] * 1e20
+
+    ax = fig.add_subplot(4,3,4)
+    pcm = ax.imshow(u_field[0,0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_1, vmax=v_max_1)
+    ax.set_ylabel('MPP', weight='regular', fontsize=20)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+    ax = fig.add_subplot(4,3,5)
+    pcm = ax.imshow(u_field[int(t_out/2), 0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_2, vmax=v_max_2)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+    ax = fig.add_subplot(4,3,6)
+    pcm = ax.imshow(u_field[-1,0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5], vmin=v_min_3, vmax=v_max_3)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+    u_field =  np.abs(pred_targs[idx] - pred_outs[idx]) * 1e20
+
+    ax = fig.add_subplot(4,3,7)
+    pcm = ax.imshow(u_field[0,0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5])
+    ax.set_ylabel('Absolute Error', weight='regular', fontsize=20)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+
+    ax = fig.add_subplot(4,3,8)
+    pcm = ax.imshow(u_field[int(t_out/2), 0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5])
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+
+    ax = fig.add_subplot(4,3,9)
+    pcm = ax.imshow(u_field[-1,0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5])
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+
+    u_field = (pred_sets[1][idx] - pred_sets[0][idx]) * 1e20
+
+    ax = fig.add_subplot(4,3,10)
+    pcm = ax.imshow(u_field[0,0], cmap=cm.coolwarm, extent=[9.5, 10.5, -0.5, 0.5])
+    ax.set_ylabel('Calibrated Error', weight='regular', fontsize=20)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+    ax = fig.add_subplot(4,3,11)
+    pcm = ax.imshow(u_field[int(t_out/2), 0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5])
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+
+    ax = fig.add_subplot(4,3,12)
+    pcm = ax.imshow(u_field[-1,0], cmap=cm.coolwarm,  extent=[9.5, 10.5, -0.5, 0.5])
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    cbar = fig.colorbar(pcm, cax=cax)
+    cbar.formatter.set_powerlimits((0, 0))
+    cbar.ax.tick_params(labelsize=15)
+    cbar.ax.yaxis.get_offset_text().set(size=15)
+
+    fig.tight_layout()
+
+    plt.savefig("mhd_rho_MPP_finetuned_qhat.pdf", format="pdf", bbox_inches='tight', transparent='True')
+    # plt.savefig("mhd_rho_MPP_AviT_L_qhat.pdf", format="pdf", bbox_inches='tight', transparent='True')
+
+qhat_plots(idx=126)
+            
+# %%
+
