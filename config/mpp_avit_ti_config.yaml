@@ -79,8 +79,8 @@ finetune: &finetune
   accum_grad: 1
   pretrained: !!bool True
   # group: 'debugging'
-  # pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/MPP_AViT_Ti' #ckpt.tar''
-  pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/swe_diffreact_mhd.tar'
+  pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/MPP_AViT_Ti' #ckpt.tar''
+  # pretrained_ckpt_path: '/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/weights/swe_diffreact_mhd.tar'
   train_data_paths: [
               ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/magnetohydrodynamics', 'mhdJOREK', ''],
               # ['/Users/Vicky/Documents/UKAEA/Code/Uncertainty_Quantification/multiple_physics_pretraining/PDEBench/2D/diffusion-reaction', 'diffre2d', ''],

@@ -947,7 +947,6 @@ def qhat_plots(idx):
     plt.savefig("mhd_rho_MPP_finetuned_qhat.pdf", format="pdf", bbox_inches='tight', transparent='True')
     # plt.savefig("mhd_rho_MPP_AviT_L_qhat.pdf", format="pdf", bbox_inches='tight', transparent='True')
 
-qhat_plots(idx=126)
+# qhat_plots(idx=126)
             
 # %%
-
